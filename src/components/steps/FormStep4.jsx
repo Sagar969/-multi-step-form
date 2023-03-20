@@ -18,7 +18,7 @@ const FormStep4 = () => {
   return (
     <div className="step">
       <h2>Finishing up</h2>
-      <p>Double-check everything looks OK before confirming.</p>
+      <p>Double-check everything before confirming.</p>
       <fieldset>
         <div className="selected-services-box">
           <div className="final-plan-container">

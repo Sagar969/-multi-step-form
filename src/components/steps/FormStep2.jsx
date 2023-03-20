@@ -1,19 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { MainContext } from '../../contexts/DataProvider';
+import data from '../../data/data';
 
-import arcadeIcon from '../../assets/images/icon-arcade.svg';
-import advancedIcon from '../../assets/images/icon-advanced.svg';
-import proIcon from '../../assets/images/icon-pro.svg';
-
-const plans = {
-  name: ['Arcade', 'Advanced', 'Pro'],
-  priceMonthly: [9, 12, 15],
-  priceYearly: [90, 120, 150],
-  icon: [arcadeIcon, advancedIcon, proIcon],
-  freePeriod: '2 months',
-};
 
 const FormStep2 = () => {
+  const plans = data.plans;
   const con = useContext(MainContext);
   const curr = con.curr;
   const [planType, setPlanType] = useState('yr');
@@ -68,7 +59,7 @@ const FormStep2 = () => {
         <div className="plans-container">
           {(() => {
             const items = [];
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < plans.name.length; i++) {
               items.push(
                 <Plan
                   key={i}

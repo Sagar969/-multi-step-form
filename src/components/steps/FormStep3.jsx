@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { MainContext } from '../../contexts/DataProvider';
+import data from '../../data/data';
 
 const style = {
   display: 'flex',
@@ -7,18 +8,13 @@ const style = {
   gap: '10px',
 };
 
-const addons = {
-  name: ['Online Service', 'Larger Storage', 'Customizable Profile'],
-  features: ['Access to multiplayer games', 'Extra 1TB of cloud save', 'Custom theme on your profile'],
-  priceMonthly: [1, 2, 2],
-  priceYearly: [10, 20, 20],
-}
 
 const FormStep3 = () => {
   const con = useContext(MainContext);
+  const addons = data.addons;
 
-  const [addonType, setAddonType] = useState(con.isYearly ? 'yr' : 'mo');
-  const [addonCost, setAddonCost] = useState(con.isYearly ? addons.priceYearly : addons.priceMonthly);
+  const addonType = con.isYearly ? 'yr' : 'mo';
+  const addonCost = con.isYearly ? addons.priceYearly : addons.priceMonthly;
   const [addonsList, setAddonsList] = useState([]);
   const rendered = useRef(false);
   const curr = con.curr;
@@ -59,7 +55,7 @@ const FormStep3 = () => {
       <fieldset style={style}>
         {(() => {
           let items = [];
-          for(let i = 0; i < 3; i++) {
+          for(let i = 0; i < addons.name.length; i++) {
             items.push(<Addon key={i} name={addons.name[i]} features={addons.features[i]} price={addonCost[i]} type={addonType} item={i} toggleAddons={toggleAddons} curr={curr} />)
           }
           return items;

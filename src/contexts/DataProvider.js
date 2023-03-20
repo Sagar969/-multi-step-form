@@ -1,29 +1,39 @@
 import React, { createContext, useState, useEffect } from "react";
 
+
 const MainContext = createContext();
 
 const DataProvider = (props) => {
-    const [userName, setUserName] = useState('Sagar Mavai');
-    const [userEmail, setUserEmail] = useState('sagarmavai2002@gmail.com');
-    const [userPhone, setUserPhone] = useState('9667270622');
+    const [userName, setUserName] = useState('');
+    const [userEmail, setUserEmail] = useState('');
+    const [userPhone, setUserPhone] = useState('');
     const [curStep, setCurStep] = useState(1);
     const [plan, setPlan] = useState(0);
-    const [planName, setPlanName] = useState('ok')
+    const [planName, setPlanName] = useState('Arcade')
     const [isYearly, setIsYearly] = useState(true);
     const [finalPlanCost, setFinalPlanCost] = useState(0);
-    const [selectedAddons, setSelectedAddons] = useState(['ooooo', 'ppppp']);
-    const [selectedAddonsCost, setSelectedAddonsCost] = useState([1, 2]);
+    const [selectedAddons, setSelectedAddons] = useState([]);
+    const [selectedAddonsCost, setSelectedAddonsCost] = useState([]);
     const [payAmt, setPayAmt] = useState(0);
     const [curr, setCurr] = useState('₹');
     const [isError, setIsError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('err');
+    const [popupClr, setPopupClr] = useState('red');
 
-    const showError = (msg) => {
+    useEffect(() => {
+      setCurr('₹')
+    })
+
+    const nextStep = () => {
+      setCurStep(prev => prev + 1);
+    }
+
+    const showPopup = (msg) => {
         setErrorMsg(msg);
         setIsError(true);
         setTimeout(() => {
             setIsError(false);
-        }, 2800);
+        }, 3000);
     }
 
     const checkInputs = () => {
@@ -39,7 +49,7 @@ const DataProvider = (props) => {
           if (!isName) errorMsg = 'Invalid Name';
           if (!isEmail) errorMsg = 'Invalid Email Address';
           if (!isPhone) errorMsg = 'Invalid Phone Number';
-          showError(errorMsg);
+          showPopup(errorMsg);
           return false;
         } else {
           return true;
@@ -52,11 +62,14 @@ const DataProvider = (props) => {
         key: "rzp_test_UO0Rw0dD07KztN",
         amount: payAmt * 100,
         currency: "INR",
-        name: "Acme Corp",
+        name: "Loremepsum Corp",
         description: "Test Transaction",
         image: "https://example.com/your_logo",
         handler: (res) => {
           console.log(res);
+          setPopupClr('green');
+          showPopup('Payment Successful');
+          nextStep();
         },
         prefill: {
           name: userName,
@@ -72,18 +85,12 @@ const DataProvider = (props) => {
       };
   
       const rzpay = window.Razorpay(options);
+      rzpay.on('payment.failed', (response) => {
+        console.log(response);
+        showPopup('something went wrong');
+      })
       rzpay.open();
     };
-
-    useEffect(() => {
-      const createOrder = async () => {
-        const res = await fetch('https://api.razorpay.com/v1/orders/amount=500,currency=INR');
-        console.log(res);
-        const data = res.json();
-        console.log(data);
-      }
-      // createOrder();
-    }, [payAmt, curr])
 
     const value = {
         curStep,
@@ -100,8 +107,8 @@ const DataProvider = (props) => {
         payAmt, setPayAmt,
         curr,
         isError, errorMsg,
-        showError, checkInputs,
-        handlePayment
+        checkInputs,
+        handlePayment, popupClr,
     }
 
     return (

@@ -4,7 +4,7 @@ const FooterCredits = () => {
   return (
     <footer>
       <p>
-        Coded by
+        Created by
         <span> </span>
         <a
           href="https://github.com/Sagar969"

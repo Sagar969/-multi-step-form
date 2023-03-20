@@ -13,12 +13,12 @@ const Sidebar = () => {
     <div className="sidebar">
       <picture>
         <source
-          media="(min-width: 1440px)"
+          media="(min-width: 1000px)"
           srcSet={desktopSB}
           sizes=""
         />
         <source
-          media="(max-width: 1440px)"
+          media="(max-width: 1000px)"
           srcSet={mobileSB}
           sizes=""
         />
