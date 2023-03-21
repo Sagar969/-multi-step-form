@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { MainContext } from '../../contexts/DataProvider';
+import { MainContext } from '../../contexts/MainContextProvider';
 
 const FormStep1 = () => {
   const con = useContext(MainContext);
@@ -7,7 +7,7 @@ const FormStep1 = () => {
   return (
     <div className="step">
       <h2>Personal info</h2>
-      <p>Please provide your name, email address, and phone number.</p>
+      <p>Please provide your name, email address, and phone number. (Enter info for demo, not storing these values)</p>
       <fieldset className="input-fields">
         <label>
           <p className="input-info">Name</p>

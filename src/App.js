@@ -1,12 +1,12 @@
 import Container from './Container'
-import { DataProvider } from './contexts/DataProvider';
+import { MainContextProvider } from './contexts/MainContextProvider';
 
 function App() {
   return (
     <div className="App">
-      <DataProvider>
+      <MainContextProvider>
         <Container />
-      </DataProvider>
+      </MainContextProvider>
     </div>
   );
 }

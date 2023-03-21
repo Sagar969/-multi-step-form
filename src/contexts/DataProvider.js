@@ -1,119 +1,83 @@
-import React, { createContext, useState, useEffect } from "react";
+import arcadeIcon from '../assets/images/icon-arcade.svg';
+import advancedIcon from '../assets/images/icon-advanced.svg';
+import proIcon from '../assets/images/icon-pro.svg';
+import { MainContext } from './MainContextProvider';
+import { useContext, createContext, useState } from 'react';
 
-
-const MainContext = createContext();
+const DataContext = createContext();
 
 const DataProvider = (props) => {
-    const [userName, setUserName] = useState('');
-    const [userEmail, setUserEmail] = useState('');
-    const [userPhone, setUserPhone] = useState('');
-    const [curStep, setCurStep] = useState(1);
-    const [plan, setPlan] = useState(0);
-    const [planName, setPlanName] = useState('Arcade')
-    const [isYearly, setIsYearly] = useState(true);
-    const [finalPlanCost, setFinalPlanCost] = useState(0);
-    const [selectedAddons, setSelectedAddons] = useState([]);
-    const [selectedAddonsCost, setSelectedAddonsCost] = useState([]);
-    const [payAmt, setPayAmt] = useState(0);
-    const [curr, setCurr] = useState('₹');
-    const [isError, setIsError] = useState(false);
-    const [errorMsg, setErrorMsg] = useState('err');
-    const [popupClr, setPopupClr] = useState('red');
+  const con = useContext(MainContext);
+  const rate = con.currRate;
 
-    useEffect(() => {
-      setCurr('₹')
-    })
+  const [plan, setPlan] = useState(0);
+  const [planName, setPlanName] = useState('Arcade');
+  const [planCost, setPlanCost] = useState();
+  const [addonsName, setAddonsName] = useState([]);
+  const [addonsCost, setAddonsCost] = useState([]);
 
-    const nextStep = () => {
-      setCurStep(prev => prev + 1);
+  let prevAddonsName = [];
+  let prevAddonsCost = [];
+
+  const prevValue = (ent) => {
+    if(ent === addonsName) {
+      if(addonsName !== []) {
+        prevAddonsName = addonsName;
+        return addonsName;
+      }
+      return prevAddonsName;
     }
-
-    const showPopup = (msg) => {
-        setErrorMsg(msg);
-        setIsError(true);
-        setTimeout(() => {
-            setIsError(false);
-        }, 3000);
+    if(ent === addonsCost) {
+      if(addonsCost !== []) {
+        prevAddonsCost = addonsCost;
+        return addonsCost;
+      }
+      return prevAddonsCost;
     }
+  }
 
-    const checkInputs = () => {
-        let errorMsg;
-        const nameReg = /^[a-zA-Z]+[a-zA-Z ]+$/;
-        const isName = nameReg.test(userName);
-        const emailReg = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z0-9]+$/;
-        const isEmail = emailReg.test(userEmail);
-        const phoneReg = /^[\+1-9]+[ 0-9]{9,}$/;
-        const isPhone = phoneReg.test(userPhone);
-        console.log(userName, userEmail, userPhone);
-        if (!isName || !isEmail || !isPhone) {
-          if (!isName) errorMsg = 'Invalid Name';
-          if (!isEmail) errorMsg = 'Invalid Email Address';
-          if (!isPhone) errorMsg = 'Invalid Phone Number';
-          showPopup(errorMsg);
-          return false;
-        } else {
-          return true;
-        }
-    };
+  const changeRates = (arr) => {
+    if(rate === 1) return arr;
+    return arr.map(n => (n * rate).toFixed(2));
+  }
 
-    const handlePayment = () => {
-  
-      const options = {
-        key: "rzp_test_UO0Rw0dD07KztN",
-        amount: payAmt * 100,
-        currency: "INR",
-        name: "Loremepsum Corp",
-        description: "Test Transaction",
-        image: "https://example.com/your_logo",
-        handler: (res) => {
-          console.log(res);
-          setPopupClr('green');
-          showPopup('Payment Successful');
-          nextStep();
-        },
-        prefill: {
-          name: userName,
-          email: userEmail,
-          contact: userPhone,
-        },
-        notes: {
-          address: "Razorpay Corporate Office",
-        },
-        theme: {
-          color: "#3399cc",
-        },
-      };
-  
-      const rzpay = window.Razorpay(options);
-      rzpay.on('payment.failed', (response) => {
-        console.log(response);
-        showPopup('something went wrong');
-      })
-      rzpay.open();
-    };
+  const plans = {
+    name: ['Arcade', 'Advanced', 'Pro'],
+    priceMonthly: changeRates([200, 400, 700]),
+    priceYearly: changeRates([2000, 4000, 7000]),
+    icon: [arcadeIcon, advancedIcon, proIcon],
+    freePeriod: '2 months',
+  };
+  const addons = {
+    name: ['Online Service', 'Larger Storage', 'Customizable Profile'],
+    features: [
+      'Access to multiplayer games',
+      'Extra 1TB of cloud save',
+      'Custom theme on your profile',
+    ],
+    priceMonthly: changeRates([80, 120, 120]),
+    priceYearly: changeRates([800, 1200, 1200]),
+  };
+  const selected = {
+    planNum: plan,
+    planName: planName,
+    planCost: planCost,
+    addonsName: prevValue(addonsName),
+    addonsCost: prevValue(addonsCost)
+  }
+ 
+  const states = { plan, setPlan, planName, setPlanName, planCost, setPlanCost, addonsName, setAddonsName, addonsCost, setAddonsCost }
 
-    const value = {
-        curStep,
-        setCurStep,
-        userName, setUserName,
-        userEmail, setUserEmail,
-        userPhone, setUserPhone,
-        plan, setPlan,
-        planName, setPlanName,
-        isYearly, setIsYearly,
-        finalPlanCost, setFinalPlanCost,
-        selectedAddons, setSelectedAddons,
-        selectedAddonsCost, setSelectedAddonsCost,
-        payAmt, setPayAmt,
-        curr,
-        isError, errorMsg,
-        checkInputs,
-        handlePayment, popupClr,
-    }
+  const value = {
+    plans,
+    addons,
+    selected,
+    states
+  };
 
-    return (
-        <MainContext.Provider value={value}>{props.children}</MainContext.Provider>
-    );
+  return (
+    <DataContext.Provider value={value}>{props.children}</DataContext.Provider>
+  );
 };
 
-export { MainContext, DataProvider }
+export { DataContext, DataProvider };

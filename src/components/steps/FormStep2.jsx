@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { MainContext } from '../../contexts/DataProvider';
-import data from '../../data/data';
-
+import { MainContext } from '../../contexts/MainContextProvider';
+import { DataContext } from '../../contexts/DataProvider';
 
 const FormStep2 = () => {
-  const plans = data.plans;
   const con = useContext(MainContext);
+  const data = useContext(DataContext);
+  const plans = data.plans;
+  const states = data.states;
   const curr = con.curr;
   const [planType, setPlanType] = useState('yr');
   const [planCost, setPlanCost] = useState(plans.priceYearly);
@@ -32,24 +33,26 @@ const FormStep2 = () => {
     con.setIsYearly((prev) => !prev);
   };
   const activePlanCost = () => {
-    con.setFinalPlanCost(con.isYearly ? plans.priceYearly[con.plan] : plans.priceMonthly[con.plan]);
-  }
+    states.setPlanCost(
+      con.isYearly ? plans.priceYearly[states.plan] : plans.priceMonthly[states.plan]
+    );
+  };
 
   useEffect(() => {
     const plans = document.querySelectorAll('.plan');
     plans.forEach((plan) => plan.classList.remove('selected-plan'));
-    plans[con.plan].classList.add('selected-plan');
+    plans[states.plan].classList.add('selected-plan');
 
     activePlanCost();
-  }, [con.plan]);
+  }, [states.plan]);
 
   const activePlan = (item) => {
-    con.setPlan(item)
-    con.setPlanName(plans.name[item]);
-  }
+    states.setPlan(item);
+    states.setPlanName(plans.name[item]);
+  };
   useEffect(() => {
-    activePlan(con.plan);
-  }, [])
+    activePlan(states.plan);
+  }, []);
 
   return (
     <div className="step">
@@ -86,14 +89,25 @@ const FormStep2 = () => {
 
 export default FormStep2;
 
-const Plan = ({ name, price, type, freePeriod, isYearly, icon, item, activePlan, curr }) => {
+const Plan = ({
+  name,
+  price,
+  type,
+  freePeriod,
+  isYearly,
+  icon,
+  item,
+  activePlan,
+  curr,
+}) => {
   return (
     <div className="plan" onClick={() => activePlan(item)}>
       <img src={icon} alt={`${name} Plan`} className="plan-icon" />
       <div className="plan-info">
         <h3 className="plan-name">{name}</h3>
         <p className="plan-pricing">
-          {curr}{price}/{type}
+          {curr}
+          {price}/{type}
         </p>
         {isYearly ? <h3 className="free-in-plan">{freePeriod} free</h3> : ''}
       </div>

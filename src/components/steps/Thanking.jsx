@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { MainContext } from '../../contexts/DataProvider';
+import { MainContext } from '../../contexts/MainContextProvider';
 
-import icon from '../../assets/images/icon-thank-you.svg'
+import icon from '../../assets/images/icon-thank-you.svg';
 
 const Thanking = () => {
   const con = useContext(MainContext);

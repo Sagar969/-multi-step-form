@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const FooterCredits = () => {
   return (
@@ -9,12 +9,14 @@ const FooterCredits = () => {
         <a
           href="https://github.com/Sagar969"
           target="_blank"
+          rel="noreferrer"
           title="visit github profile"
-          >Sagar Mavai</a
         >
+          Sagar Mavai
+        </a>
       </p>
     </footer>
-  )
-}
+  );
+};
 
-export default FooterCredits
+export default FooterCredits;
